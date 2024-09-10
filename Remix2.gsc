@@ -35,7 +35,6 @@
 #include scripts/zm/remix/_debug;
 #include scripts/zm/remix/_dogs;
 
-
 main()
 { 
 	level.VERSION = "1.7.2";
@@ -50,7 +49,7 @@ main()
 	replaceFunc( maps/mp/zombies/_zm_powerups::free_perk_powerup, ::free_perk_powerup_override );
 	replaceFunc( maps/mp/zombies/_zm_powerups::nuke_powerup, ::nuke_powerup_override );
 	replaceFunc( maps/mp/zombies/_zm_utility::disable_player_move_states, ::disable_player_move_states_override );
-	replaceFunc( maps/mp/zombies/_zm_utility::set_run_speed, ::set_run_speed_override );
+	replaceFunc( maps/mp/zombies/_zm_utility::set_run_speed, ::set_run_speed_override ); // Modificamos esta función
 	replaceFunc( maps/mp/zombies/_zm_utility::get_player_weapon_limit, ::get_player_weapon_limit_override );
 	replaceFunc( maps/mp/zombies/_zm_magicbox::treasure_chest_canplayerreceiveweapon, ::treasure_chest_canplayerreceiveweapon_override);
 	replaceFunc( maps/mp/zombies/_zm_magicbox::treasure_chest_weapon_spawn, ::treasure_chest_weapon_spawn_override );
@@ -67,8 +66,6 @@ main()
 	replaceFunc( maps/mp/zombies/_zm_utility::wait_network_frame, ::wait_network_frame_override );
 	replaceFunc( maps/mp/zombies/_zm_score::add_to_player_score, ::add_to_player_score_override );
 
-	
-	
     level.initial_spawn = true;
     level thread onConnect();
 }
@@ -119,7 +116,6 @@ connected()
 
 	    	self thread timer_hud();
 			self thread trap_timer_hud();
-			self thread health_bar_hud();
 			self thread zombie_remaining_hud();
 			self thread zone_hud();
 			self thread color_hud();
@@ -184,4 +180,18 @@ connected()
 			level thread wallbuy_dynamic_increase_trigger_radius();
 		}
 	}
+}
+
+set_run_speed_override() // Aquí se controla la velocidad de los zombis según la ronda
+{
+    if (level.round_number <= 5)
+    {
+        // Los zombis caminarán más despacio en las primeras 5 rondas
+        level.zombie_run_speed = 0.5; 
+    }
+    else
+    {
+        // Los zombis correrán normalmente después de la ronda 5
+        level.zombie_run_speed = 1.0;
+    }
 }
